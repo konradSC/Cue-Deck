@@ -1,0 +1,24 @@
+# Type-checks every push to main and every pull request. The "typecheck" job is the
+# required status check in the "Protect main" ruleset, so a PR that breaks the build
+# can't be merged.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
